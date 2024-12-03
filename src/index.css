@@ -1,0 +1,14 @@
+body {
+  background-color: #1B2226;
+  color: #f8f9fa;
+}
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+#root {
+  height: 100%;
+}
