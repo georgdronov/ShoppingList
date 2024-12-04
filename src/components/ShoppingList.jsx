@@ -6,6 +6,7 @@ class ShoppingList extends Component {
     this.state = {
       items: JSON.parse(localStorage.getItem("shoppingList")) || [],
       currentItem: "",
+      itemsToRemove: [],
     };
   }
 
@@ -30,9 +31,19 @@ class ShoppingList extends Component {
   };
 
   handleDeleteItem = (index) => {
-    const { items } = this.state;
-    const updatedItems = items.filter((_, i) => i !== index);
-    this.setState({ items: updatedItems });
+    const { itemsToRemove } = this.state;
+
+    this.setState(
+      { itemsToRemove: [...itemsToRemove, index] },
+      () => {
+        setTimeout(() => {
+          const { items, itemsToRemove } = this.state;
+          const updatedItems = items.filter((_, i) => i !== index);
+          const updatedItemsToRemove = itemsToRemove.filter((i) => i !== index);
+          this.setState({ items: updatedItems, itemsToRemove: updatedItemsToRemove });
+        }, 1000);
+      }
+    );
   };
 
   handleToggleBought = (index) => {
@@ -44,18 +55,16 @@ class ShoppingList extends Component {
   };
 
   render() {
-    const { items, currentItem } = this.state;
+    const { items, currentItem, itemsToRemove } = this.state;
 
     return (
       <div className="d-flex flex-column">
-        {/* Основной контент */}
         <div className="container pt-4 flex-grow-1">
           <h1 className="text-center" style={{ fontSize: "2rem" }}>Shopping List</h1>
           <p className="text-center" style={{ fontSize: "1.2rem" }}>
             Add, remove, and manage your shopping list
           </p>
 
-          {/* Input Form */}
           <form className="d-flex flex-column align-items-center mt-4" onSubmit={this.handleAddItem}>
             <input
               type="text"
@@ -74,7 +83,6 @@ class ShoppingList extends Component {
             </button>
           </form>
 
-          {/* Shopping List */}
           <div className="mt-4">
             <ul
               className="list-group"
@@ -88,13 +96,16 @@ class ShoppingList extends Component {
               {items.map((item, index) => (
                 <li
                   key={index}
-                  className={`list-group-item d-flex justify-content-between align-items-center ${item.bought ? "text-decoration-line-through" : ""}`}
+                  className={`list-group-item d-flex justify-content-between align-items-center 
+                  ${item.bought ? "text-decoration-line-through" : ""} 
+                  ${itemsToRemove.includes(index) ? "fade-out" : "fade-in"}`}
                   style={{
                     fontSize: "1.2rem",
                     padding: "15px",
                     marginBottom: "5px",
                     width: "100%",
                     boxSizing: "border-box",
+                    transition: "opacity 1s ease-out",
                   }}
                 >
                   {item.name}
@@ -125,3 +136,4 @@ class ShoppingList extends Component {
 }
 
 export default ShoppingList;
+
