@@ -33,25 +33,17 @@ class ShoppingList extends Component {
   handleDeleteItem = (index) => {
     const { itemsToRemove } = this.state;
 
-    this.setState(
-      { itemsToRemove: [...itemsToRemove, index] },
-      () => {
-        setTimeout(() => {
-          const { items, itemsToRemove } = this.state;
-          const updatedItems = items.filter((_, i) => i !== index);
-          const updatedItemsToRemove = itemsToRemove.filter((i) => i !== index);
-          this.setState({ items: updatedItems, itemsToRemove: updatedItemsToRemove });
-        }, 1000);
-      }
-    );
-  };
-
-  handleToggleBought = (index) => {
-    const { items } = this.state;
-    const updatedItems = items.map((item, i) =>
-      i === index ? { ...item, bought: !item.bought } : item
-    );
-    this.setState({ items: updatedItems });
+    this.setState({ itemsToRemove: [...itemsToRemove, index] }, () => {
+      setTimeout(() => {
+        const { items, itemsToRemove } = this.state;
+        const updatedItems = items.filter((_, i) => i !== index);
+        const updatedItemsToRemove = itemsToRemove.filter((i) => i !== index);
+        this.setState({
+          items: updatedItems,
+          itemsToRemove: updatedItemsToRemove,
+        });
+      }, 1000);
+    });
   };
 
   render() {
@@ -60,12 +52,17 @@ class ShoppingList extends Component {
     return (
       <div className="d-flex flex-column">
         <div className="container pt-4 flex-grow-1">
-          <h1 className="text-center" style={{ fontSize: "2rem" }}>Shopping List</h1>
+          <h1 className="text-center" style={{ fontSize: "2rem" }}>
+            Shopping List
+          </h1>
           <p className="text-center" style={{ fontSize: "1.2rem" }}>
             Add, remove, and manage your shopping list
           </p>
 
-          <form className="d-flex flex-column align-items-center mt-4" onSubmit={this.handleAddItem}>
+          <form
+            className="d-flex flex-column align-items-center mt-4"
+            onSubmit={this.handleAddItem}
+          >
             <input
               type="text"
               className="form-control mb-3"
@@ -111,13 +108,6 @@ class ShoppingList extends Component {
                   {item.name}
                   <div>
                     <button
-                      className={`btn btn-sm ${item.bought ? "btn-secondary" : "btn-success"} me-2`}
-                      onClick={() => this.handleToggleBought(index)}
-                      style={{ fontSize: "1rem" }}
-                    >
-                      {item.bought ? "Unmark" : "Bought"}
-                    </button>
-                    <button
                       className="btn btn-danger btn-sm"
                       onClick={() => this.handleDeleteItem(index)}
                       style={{ fontSize: "1rem" }}
@@ -136,4 +126,3 @@ class ShoppingList extends Component {
 }
 
 export default ShoppingList;
-
